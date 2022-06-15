@@ -1,0 +1,66 @@
+usertype Timestamp;
+
+protocol woolam(A,B,S)
+{
+      secret Kas,Kbs:SessionKey;
+   
+       role A
+       {
+
+        const  Na :Nonce;
+        var Nb : Nonce;
+        fresh T1, T2 , T3 : Timestamp;
+ 
+       
+        send_1(A,B,T1,   A, Na );
+        recv_2(B,A,T2,  B, Nb);
+        send_3(A,B,  {A, B, Nb, Na}Kas );
+        recv_6(B,A,  { B, Nb, Na}Kas );
+        claim_A1(A,Secret,Nb);
+        claim_A2(A,Secret,Na);
+        claim_A3(A,Nisynch);
+
+
+
+        }
+       
+      role B
+       {
+        var Na : Nonce;
+        const  Nb :Nonce;
+       fresh T1, T2 , T3 : Timestamp;
+        
+
+         recv_1(A,B,T1, A, Na);
+         send_2(B,A, T2, B, Nb );
+         recv_3(A,B,  {A, B, Nb, Na}Kas );
+         send_4(B,S,  {A, B, Nb, Na}Kas ,{A, B, Nb, Na}Kbs );  
+         recv_5(S,B,  { B, Nb, Na}Kas ,{A, Nb, Na}Kbs );
+         send_6(B,A,  { B, Nb, Na}Kas );  
+        claim_B1(B,Secret,Na);
+        claim_B2(B,Secret,Nb);
+        claim_B3(B,Nisynch);
+
+        }
+
+        role S
+        {
+       
+        var  Nb , Na :Nonce;
+        
+       
+         
+
+         recv_4(B,S,  {A, B, Nb, Na}Kas ,{A, B, Nb, Na}Kbs );  
+          send_5(S,B,  { B, Nb, Na}Kas ,{A, Nb, Na}Kbs );  
+          claim_S1(S,Secret,Na);
+          claim_S1(S,Secret,Nb);
+          claim_S2(S,Nisynch);
+             
+         }
+
+}
+const Kbs , Kas:SessionKey;
+const eve :Agent ;
+untrusted eve ;
+compromised Kbs(eve), Kas(eve);

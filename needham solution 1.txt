@@ -1,0 +1,32 @@
+protocol Needhamsch(A,B)
+{
+role A
+{
+const na: Nonce;
+var nb : Nonce;
+
+send_1(A,B,  {na , A}pk(B) );
+recv_2(B,A, {nb ,B, na}pk(A) );
+send_3(A,B, {nb}pk(B));
+claim_a1(A,Secret,na);
+claim_a2(A,Secret,nb);
+claim_a3(A,Nisynch);
+}
+
+role B
+{
+var na: Nonce;
+const nb : Nonce;
+
+recv_1(A,B,  {na , A}pk(B) );
+send_2(B,A, {nb , B ,na}pk(A) );
+recv_3(A,B, {nb}pk(B) );
+claim_b1(B,Secret,na);
+claim_b2(B,Secret,nb);
+claim_a3(B,Nisynch);
+     
+}
+}
+   
+   const eve:Agent;
+   untrusted eve;
